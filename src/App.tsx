@@ -91,7 +91,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
         <nav className="hidden md:flex items-center gap-8">
           {[
             { label: "TOOLS", active: view.startsWith("tool-") || view === "home", id: "home" as View },
-            { label: "EXPLORE", active: view === "explore", id: "explore" as View },
+            { label: "ANSWER", active: view === "answer", id: "answer" as View },
             { label: "ABOUT", active: view === "about", id: "about" as View },
         ].map((item) => (
             <button
