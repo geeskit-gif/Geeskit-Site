@@ -82,10 +82,10 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
       <div className="relative mx-auto max-w-[1280px] px-5 md:px-8 h-[64px] flex items-center justify-between">
         <button onClick={() => { setView("home"); onAction?.("GEESKIT — HOME"); window.scrollTo({top:0,behavior:"smooth"}); }} className="flex items-center gap-3 group">
           <div className="h-7 w-7 overflow-hidden bg-black border border-white/10 flex items-center justify-center" style={clipSmall}>
-            <img src={geeskitLogo} alt="GEESKIT" className="h-[36px] w-[36px] object-cover object-[left_center] scale-[2.2] -ml-[2px]" />
-          </div>
-          <span className="text-[14px] tracking-[0.22em] font-semibold text-[#F5F5F7] group-hover:text-white">GEESKIT</span>
-        </button>
+  <img src={geeskitLogo} alt="GEESKIT" className="h-full w-full object-contain" />
+</div>
+<span className="text-[14px] tracking-[0.22em] font-semibold text-[#F5F5F7] group-hover:text-white">GEESKIT</span>
+</button>
 
         <nav className="hidden md:flex items-center gap-8">
           {[
