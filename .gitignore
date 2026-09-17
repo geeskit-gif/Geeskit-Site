@@ -1,0 +1,13 @@
+# deps
+node_modules
+dist
+.env
+.env.local
+
+# vite
+*.local
+
+# editor
+.vscode
+.idea
+.DS_Store
