@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from "react";
+import SEOContent from "./pages/SEOContent";
 const geeskitLogo = "/geeskit-logo.jpg";
 
 // Types
-type View = "home" | "tool-job-profit" | "tool-hourly-rate" | "tool-interruption" | "about" | "explore";
+type View = "home" | "tool-job-profit" | "tool-hourly-rate" | "tool-interruption" |"about" | "answers";
 
 interface ToolDef {
   id: View;
