@@ -91,7 +91,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
         <nav className="hidden md:flex items-center gap-8">
           {[
             { label: "TOOLS", active: view.startsWith("tool-") || view === "home", id: "home" as View },
-            { label: "ANSWER", active: view === "answer", id: "answer" as View },
+            { label: "ANSWERS", active: view === "answers", id: "answers" as View },
             { label: "ABOUT", active: view === "about", id: "about" as View },
         ].map((item) => (
             <button
@@ -122,7 +122,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
           <div className="px-5 py-6 space-y-4">
             {[
               { label: "TOOLS", id: "home" as View },
-              { label: "ANSWER", id: "answer" as View },
+              { label: "ANSWERS", id: "answers" as View },
               { label: "ABOUT", id: "about" as View },
             ].map((l) => (
               <button key={l.label} onClick={() => { setView(l.id); setMobileOpen(false); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2">{l.label}</button>
