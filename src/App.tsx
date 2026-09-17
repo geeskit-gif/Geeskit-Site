@@ -587,7 +587,7 @@ export default function App() {
               <h1 className="text-[28px] md:text-[40px] font-bold leading-[0.95] text-white">MAKE THE NEXT<br /><span className="text-[#E11D33]">DECISION EASIER.</span></h1>
               <div className="mt-8 space-y-5 text-[14px] leading-[1.7] text-[#A1A1AA]">
                 <p>GEESKIT is a free digital utility and discovery environment. It helps people figure things out, solve practical problems, understand situations, calculate things, make decisions, generate useful outputs, and eventually access deeper systems when a recurring problem requires one.</p>
-                <p className="text-white font-medium">Useful tools for figuring things out.</p>
+                <p className="text-white font-medium">Free tools for calculating, comparing, planning, and making everyday business decisions.</p>            
                 <p>Real problem → Useful experience → Answer / Result / Action. When a problem is recurring and valuable, it becomes a deeper system. GEESKIT is the free layer where useful digital experiences can live.</p>
                 <div className="pt-6 border-t border-white/10">
                   <div className="text-[11px] tracking-[0.2em] text-[#71717A]">WHAT GEESKIT IS NOT</div>
