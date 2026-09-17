@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import geeskitLogo from "./assets/geeskit-logo.jpg";
+const geeskitLogo = "/geeskit-logo.jpg";
 
 // Types
 type View = "home" | "tool-job-profit" | "tool-hourly-rate" | "tool-interruption" | "about" | "explore";
