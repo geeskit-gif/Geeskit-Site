@@ -122,7 +122,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
           <div className="px-5 py-6 space-y-4">
             {[
               { label: "TOOLS", id: "home" as View },
-              { label: "EXPLORE", id: "explore" as View },
+              { label: "ANSWER", id: "answer" as View },
               { label: "ABOUT", id: "about" as View },
             ].map((l) => (
               <button key={l.label} onClick={() => { setView(l.id); setMobileOpen(false); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2">{l.label}</button>
