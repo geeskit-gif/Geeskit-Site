@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SEOContent from "./pages/SEOContent";
 const geeskitLogo = "/geeskit-logo.jpg";
 
 // Types
-type View = "home" | "tool-job-profit" | "tool-hourly-rate" | "tool-interruption" |"about" | "answers";
+type View = "home" | "tool-job-profit" | "tool-hourly-rate" | "tool-interruption" | "about" | "answers";
 
 interface ToolDef {
   id: View;
@@ -14,6 +14,64 @@ interface ToolDef {
   category: string;
   longDesc: string;
 }
+
+const ROUTES: Record<View, string> = {
+  home: "/",
+  "tool-job-profit": "/tools/job-profit",
+  "tool-hourly-rate": "/tools/hourly-rate",
+  "tool-interruption": "/tools/interruption-cost",
+  about: "/about",
+  answers: "/answers",
+};
+
+const ROUTE_VIEWS: Record<string, View> = Object.fromEntries(
+  Object.entries(ROUTES).map(([key, value]) => [value, key as View]),
+);
+
+function getViewFromPath(pathname: string): View {
+  const normalized = pathname === "/" ? "/" : pathname.replace(/\/+$/, "") || "/";
+  return ROUTE_VIEWS[normalized] || "home";
+}
+
+function getPathForView(view: View) {
+  return ROUTES[view] || "/";
+}
+
+const METADATA: Record<View, { title: string; description: string; canonical: string }> = {
+  home: {
+    title: "GEESKIT — Useful Tools",
+    description: "Useful tools. Real answers. For work, business and everyday decisions.",
+    canonical: "https://geeskit.com/",
+  },
+  "tool-job-profit": {
+    title: "Job Profit Calculator — Calculate Your Real Job Profit | GEESKIT",
+    description:
+      "GEESKIT's Job Profit Calculator helps you calculate real job profit by considering revenue, labor, materials, expenses, and pricing.",
+    canonical: "https://geeskit.com/tools/job-profit",
+  },
+  "tool-hourly-rate": {
+    title: "Hourly Rate Calculator — Know What to Charge | GEESKIT",
+    description:
+      "GEESKIT's Hourly Rate Calculator helps you estimate a sustainable rate based on income goals, expenses, taxes, and billable hours.",
+    canonical: "https://geeskit.com/tools/hourly-rate",
+  },
+  "tool-interruption": {
+    title: "Employee Interruption Cost Calculator | GEESKIT",
+    description:
+      "GEESKIT's Employee Interruption Cost Calculator helps you quantify time lost and annual employee interruption costs.",
+    canonical: "https://geeskit.com/tools/interruption-cost",
+  },
+  answers: {
+    title: "Answers — GEESKIT",
+    description: "Practical answers to money, work, and business questions from GEESKIT.",
+    canonical: "https://geeskit.com/answers",
+  },
+  about: {
+    title: "About GEESKIT — Make the Next Decision Easier",
+    description: "Learn about GEESKIT and how it helps people make practical business and work decisions with useful tools.",
+    canonical: "https://geeskit.com/about",
+  },
+};
 
 const TOOLS: ToolDef[] = [
   {
@@ -79,24 +137,24 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
   const [mobileOpen, setMobileOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 bg-[#050507]/90 backdrop-blur-xl border-b border-white/[0.07]">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
       <div className="relative mx-auto max-w-[1280px] px-5 md:px-8 h-[64px] flex items-center justify-between">
         <button onClick={() => { setView("home"); onAction?.("GEESKIT — HOME"); window.scrollTo({top:0,behavior:"smooth"}); }} className="flex items-center gap-3 group">
           <div className="h-7 w-7 overflow-hidden bg-black border border-white/10 flex items-center justify-center" style={clipSmall}>
-  <img src={geeskitLogo} alt="GEESKIT" className="h-full w-full object-contain" />
-</div>
-<span className="text-[14px] tracking-[0.22em] font-semibold text-[#F5F5F7] group-hover:text-white">GEESKIT</span>
-</button>
+            <img src={geeskitLogo} alt="GEESKIT" className="h-full w-full object-contain" />
+          </div>
+          <span className="text-[14px] tracking-[0.22em] font-semibold text-[#F5F5F7] group-hover:text-white">GEESKIT</span>
+        </button>
 
         <nav className="hidden md:flex items-center gap-8">
           {[
             { label: "TOOLS", active: view.startsWith("tool-") || view === "home", id: "home" as View },
             { label: "ANSWERS", active: view === "answers", id: "answers" as View },
             { label: "ABOUT", active: view === "about", id: "about" as View },
-        ].map((item) => (
+          ].map((item) => (
             <button
               key={item.label}
-              onClick={() => { setView(item.id); onAction?.(`OPEN ${item.label}`); if(item.id==="home"){ setTimeout(()=>document.getElementById("tools-section")?.scrollIntoView({behavior:"smooth"}), 80);} }}
+              onClick={() => { setView(item.id); onAction?.(`OPEN ${item.label}`); if(item.id === "home") { setTimeout(() => document.getElementById("tools-section")?.scrollIntoView({behavior:"smooth"}), 8); } }}
               className={`relative text-[11px] tracking-[0.18em] font-medium py-2 ${item.active ? "text-white" : "text-[#A1A1AA] hover:text-white"} transition-colors`}
             >
               {item.label}
@@ -106,7 +164,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
         </nav>
 
         <div className="flex items-center gap-3">
-          <button onClick={onSearchFocus} className="hidden md:flex h-8 px-3 items-center gap-2 border border-white/[0.08] bg-white/[0.03] text-[10px] tracking-[0.15em] text-[#A1A1AA] hover:text-white hover:border-white/15 transition-colors" style={clipSmall}>
+          <button onClick={onSearchFocus} className="hidden md:flex h-8 px-3 items-center gap-2 border border-white/[0.08] bg-white/[0.03] text-[10px] tracking-[0.15em] text-[#A1A1AA] hover:text-white transition-colors" style={clipSmall}>
             <span className="w-3 h-3 border border-current rounded-[1px] inline-block" /> SEARCH
           </button>
           <div className="hidden md:block text-[10px] tracking-[0.15em] text-[#71717A] border border-white/10 px-2 py-1">EN</div>
@@ -125,7 +183,9 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
               { label: "ANSWERS", id: "answers" as View },
               { label: "ABOUT", id: "about" as View },
             ].map((l) => (
-              <button key={l.label} onClick={() => { setView(l.id); setMobileOpen(false); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2">{l.label}</button>
+              <button key={l.label} onClick={() => { setView(l.id); setMobileOpen(false); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2 hover:text-white">
+                {l.label}
+              </button>
             ))}
             <div className="pt-4 text-[10px] tracking-[0.2em] text-[#71717A]">MAKE THE NEXT DECISION EASIER — GEESKIT.COM</div>
           </div>
@@ -170,7 +230,7 @@ function Field({ label, value, onChange, error, type = "number", min, max, step 
           max={max}
           step={step}
           placeholder={placeholder}
-          className={`w-full h-[46px] bg-[#0E0E13] border px-4 text-[14px] text-[#F5F5F7] placeholder:text-[#52525B] focus:outline-none focus:border-[#E11D33]/60 focus:bg-[#12121A] transition-all ${error ? "border-[#E11D33]/80" : "border-white/[0.08]"}`}
+          className={`w-full h-[46px] bg-[#0E0E13] border px-4 text-[14px] text-[#F5F5F7] placeholder:text-[#52525B] focus:outline-none focus:border-[#E11D33]/60 focus:bg-[#12121A] transition-all ${error ? "border-[#E11D33]/60" : "border-white/[0.08]"}`}
           style={clipSmall}
         />
         {error && <div className="absolute -bottom-1 right-2 text-[9px] tracking-[0.1em] bg-[#E11D33] text-white px-1.5 py-0.5">!</div>}
@@ -200,12 +260,57 @@ function CopyButton({ text }: { text: string }) {
 }
 
 export default function App() {
-  const [view, setView] = useState<View>("home");
+  const [view, setView] = useState<View>(() => getViewFromPath(window.location.pathname));
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  const setPathView = (nextView: View) => {
+    const nextPath = getPathForView(nextView);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, "", nextPath);
+    }
+    setView(nextView);
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      setView(getViewFromPath(window.location.pathname));
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
+    const metadata = METADATA[view];
+    if (!metadata) return;
+
+    document.title = metadata.title;
+
+    let descriptionTag = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!descriptionTag) {
+      descriptionTag = document.createElement("meta");
+      descriptionTag.setAttribute("name", "description");
+      document.head.appendChild(descriptionTag);
+    }
+    descriptionTag.setAttribute("content", metadata.description);
+
+    let canonicalTag = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonicalTag) {
+      canonicalTag = document.createElement("link");
+      canonicalTag.setAttribute("rel", "canonical");
+      document.head.appendChild(canonicalTag);
+    }
+    canonicalTag.setAttribute("href", metadata.canonical);
+  }, [view]);
+
   const showToast = (msg: string) => { setToast(msg); setTimeout(()=>setToast(null), 1800); };
-  const navigate = (v: View) => { setView(v); showToast(v==="home" ? "GEESKIT — HOME" : `OPEN ${v.toUpperCase()}`); window.scrollTo({top:0, behavior:"smooth"}); };
+  const navigate = (v: View) => {
+    setPathView(v);
+    showToast(v === "home" ? "GEESKIT — HOME" : `OPEN ${v.toUpperCase()}`);
+    window.scrollTo({top:0, behavior:"smooth"});
+  };
 
   // Tool 1 state
   const [job, setJob] = useState({ revenue: "5000", materials: "1200", laborHours: "24", laborRate: "45", overhead: "400", taxPercent: "25", targetMargin: "30" });
@@ -224,7 +329,7 @@ export default function App() {
   }, [search, categoryFilter]);
 
   const scrollToTools = () => {
-    setView("home");
+    setPathView("home");
     setTimeout(() => document.getElementById("tools-section")?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
@@ -244,21 +349,16 @@ export default function App() {
     const net = gross - taxAmt;
     const margin = rev > 0 ? (net / rev) * 100 : 0;
     const effHourly = hrs > 0 ? net / hrs : 0;
+
     let required = 0;
-    if (target < 100 && target >= 0) {
-      const needBeforeTax = totalCost / (1 - target / 100);
-      required = taxP < 100 ? needBeforeTax / (1 - taxP / 100) * (1 - taxP / 100) + taxAmt : needBeforeTax; // simplified correctly: we want net = target% of rev
-      // Actually net = (rev - totalCost)*(1-tax). So rev = totalCost / (1 - target/(1-tax))
-      if (taxP < 100) {
-        const netTargetRatio = target / 100;
-        // net = (rev - totalCost)*(1-taxP/100) = rev*netTargetRatio => rev - totalCost = rev*netTargetRatio/(1-taxP/100)
-        // rev * [1 - netTargetRatio/(1-taxP/100)] = totalCost
-        const denom = 1 - netTargetRatio / (1 - taxP / 100);
-        required = denom > 0 ? totalCost / denom : 0;
-      } else {
-        required = totalCost / (1 - target / 100);
+    if (target >= 0 && target < 100 && taxP >= 0 && taxP < 100) {
+      const taxRate = taxP / 100;
+      const denominator = 1 - (target / 100) / (1 - taxRate);
+      if (denominator > 0) {
+        required = totalCost / denominator;
       }
     }
+
     const errors: any = {};
     if (rev < 0) errors.revenue = "Must be >= 0";
     if (mat < 0) errors.materials = "Must be >= 0";
@@ -377,7 +477,7 @@ export default function App() {
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                           placeholder="Describe your question or find a tool..."
-                          className="w-full h-[52px] bg-[#0E0E13] border border-white/[0.08] px-4 pr-10 text-[14px] text-white placeholder:text-[#52525B] focus:outline-none focus:border-[#E11D33]/50 transition-colors mono"
+                          className="w-full h-[52px] bg-[#0E0E13] border border-white/[0.08] px-4 pr-10 text-[14px] text-white placeholder:text-[#52525B] focus:outline-none focus:border-[#E11D33]/50 transition-colors"
                           style={clipSmall}
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#52525B]">⌕</span>
@@ -385,7 +485,7 @@ export default function App() {
                       <button
                         onClick={() => {
                           if (search) document.getElementById("tools-section")?.scrollIntoView({ behavior: "smooth" });
-                          showToast(search ? `SEARCH: ${search}` : "EXPLORE TOOLS");
+                          showToast(search ? `SEARCH: ${search}` : "BROWSE TOOLS");
                         }}
                         className="h-[52px] w-[52px] flex items-center justify-center bg-[#E11D33] text-white hover:bg-[#C91A2E] transition-colors"
                         style={clipSmall}
@@ -480,7 +580,7 @@ export default function App() {
                   {filteredTools.map((tool) => (
                     <button
                       key={tool.id}
-                      onClick={() => setView(tool.id)}
+                      onClick={() => setPathView(tool.id)}
                       className="group text-left border border-white/[0.07] bg-[#101014] hover:bg-[#12121A] hover:border-[#E11D33]/30 transition-all duration-200 p-6 md:p-7 flex flex-col min-h-[280px] relative overflow-hidden"
                       style={clipStyle}
                     >
@@ -509,7 +609,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* Explore by need */}
+            {/* Need-based categories */}
             <section className="border-t border-white/[0.06] bg-[#08080C]">
               <div className="mx-auto max-w-[1280px] px-5 md:px-8 py-14 md:py-20">
                 <div className="mb-10">
@@ -528,7 +628,7 @@ export default function App() {
                           document.getElementById("tools-section")?.scrollIntoView({ behavior: "smooth" });
                         }
                       }}
-                      className={`text-left border p-5 transition-all ${cat.soon ? "border-white/[0.04] bg-[#0A0A0E] opacity-60 cursor-not-allowed" : "border-white/[0.07] bg-[#101014] hover:border-[#E11D33]/30 hover:bg-[#12121A] cursor-pointer"}`}
+                      className={`text-left border p-5 transition-all ${cat.soon ? "border-white/[0.04] bg-[#0A0A0E] opacity-60 cursor-not-allowed" : "border-white/[0.07] bg-[#101014] hover:border-[#E11D33]/30"}`}
                       style={clipSmall}
                     >
                       <div className="flex items-start justify-between mb-6">
@@ -546,38 +646,9 @@ export default function App() {
           </>
         )}
 
-        {view === "explore" && (
-          <section className="mx-auto max-w-[1280px] px-5 md:px-8 py-12 md:py-20">
-            <button onClick={() => setView("home")} className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-[#A1A1AA] hover:text-white mb-8">
-              <span>←</span> BACK TO HOME
-            </button>
-            <h2 className="text-[32px] md:text-[44px] font-bold leading-[0.95]"><span className="text-white">EXPLORE</span> <span className="text-[#E11D33]">BY NEED</span></h2>
-            <p className="mt-4 text-[#A1A1AA] max-w-[500px]">Filter tools by what you're trying to figure out. More categories will appear as new tools launch.</p>
-
-            <div className="mt-10 grid md:grid-cols-5 gap-3">
-              {CATEGORIES.map((c) => (
-                <button key={c.id} onClick={() => !c.soon && setCategoryFilter(categoryFilter === c.id ? null : c.id)} className={`text-left border p-5 ${categoryFilter === c.id ? "border-[#E11D33]/40 bg-[#E11D33]/10" : "border-white/10 bg-[#0E0E13]"}`} style={clipSmall}>
-                  <div className="text-[12px] text-white">{c.id}</div>
-                  <div className="text-[11px] text-[#71717A] mt-1">{c.desc}</div>
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-10 grid md:grid-cols-3 gap-4">
-              {TOOLS.filter(t => !categoryFilter || t.category === categoryFilter).map((tool) => (
-                <button key={tool.id} onClick={() => setView(tool.id)} className="text-left border border-white/10 bg-[#101014] p-6 hover:border-[#E11D33]/30" style={clipStyle}>
-                  <div className="text-[11px] text-[#E11D33] mono">{tool.number}</div>
-                  <div className="text-[14px] text-white font-semibold mt-2">{tool.name}</div>
-                  <div className="text-[12px] text-[#A1A1AA] mt-2">{tool.desc}</div>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
         {view === "about" && (
           <section className="mx-auto max-w-[900px] px-5 md:px-8 py-12 md:py-20">
-            <button onClick={() => setView("home")} className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-[#A1A1AA] hover:text-white mb-8"><span>←</span> BACK</button>
+            <button onClick={() => setPathView("home")} className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-[#A1A1AA] hover:text-white mb-8"><span>←</span> BACK</button>
             <div className="border border-white/10 bg-[#0E0E13] p-8 md:p-12" style={clipStyle}>
               <div className="flex items-center gap-4 mb-8">
                 <img src={geeskitLogo} alt="GEESKIT" className="h-12 w-auto object-contain bg-black border border-white/10" />
@@ -586,9 +657,9 @@ export default function App() {
               </div>
               <h1 className="text-[28px] md:text-[40px] font-bold leading-[0.95] text-white">MAKE THE NEXT<br /><span className="text-[#E11D33]">DECISION EASIER.</span></h1>
               <div className="mt-8 space-y-5 text-[14px] leading-[1.7] text-[#A1A1AA]">
-                <p>GEESKIT is a free digital utility and discovery environment. It helps people figure things out, solve practical problems, understand situations, calculate things, make decisions, generate useful outputs, and eventually access deeper systems when a recurring problem requires one.</p>
-                <p>Use GEESKIT to calculate job profit, estimate an hourly rate, understand the cost of employee interruptions, compare numbers, and get practical answers without creating an account.</p>       
-                <p>Real problem → Useful experience → Answer / Result / Action. When a problem is recurring and valuable, it becomes a deeper system. GEESKIT is the free layer where useful digital experiences can live.</p>
+                <p>GEESKIT is a free digital utility and discovery environment. It helps people figure things out, solve practical problems, understand situations, calculate things, make decisions, and move forward with clearer understanding.</p>
+                <p>Use GEESKIT to calculate job profit, estimate an hourly rate, understand the cost of employee interruptions, compare numbers, and get practical answers without creating an account.</p>
+                <p>Real problem → Useful experience → Answer / Result / Action. When a problem is recurring and valuable, it becomes a deeper system. GEESKIT is the free layer where useful digital experiences become practical tools.</p>
                 <div className="pt-6 border-t border-white/10">
                   <div className="text-[11px] tracking-[0.2em] text-[#71717A]">WHAT GEESKIT IS NOT</div>
                   <ul className="mt-3 space-y-2 text-[13px] text-[#71717A] list-disc pl-5">
@@ -606,13 +677,17 @@ export default function App() {
           </section>
         )}
 
+        {view === "answers" && (
+          <SEOContent onTool={(tool) => setPathView(tool)} />
+        )}
+
         {/* TOOL PAGES */}
         {view === "tool-job-profit" && (
           <ToolLayout
             number="01"
             name="JOB PROFIT CALCULATOR"
             desc="Know if a job actually made money. Profit, margin, and true hourly."
-            onBack={() => setView("home")}
+            onBack={() => setPathView("home")}
             search={search}
           >
             <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-5 md:gap-6">
@@ -667,7 +742,7 @@ export default function App() {
                       <div className="text-[10px] tracking-[0.15em] text-[#71717A]">NET PROFIT</div>
                       <div className="mt-2 flex items-baseline gap-3">
                         <span className={`text-[36px] font-bold leading-none mono ${jobCalc.net < 0 ? "text-[#E11D33]" : "text-white"}`}>{formatCurrency(jobCalc.net)}</span>
-                        <span className={`text-[14px] px-2 py-1 border mono ${jobCalc.margin < 0 ? "border-[#E11D33]/30 bg-[#E11D33]/10 text-[#E11D33]" : jobCalc.margin < 10 ? "border-amber-500/30 bg-amber-500/10 text-amber-400" : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"}`}>{formatPercent(jobCalc.margin)} margin</span>
+                        <span className={`text-[14px] px-2 py-1 border mono ${jobCalc.margin < 0 ? "border-[#E11D33]/30 bg-[#E11D33]/10 text-[#E11D33]" : jobCalc.margin < 10 ? "border-amber-500/30 bg-amber-500/10 text-amber-300" : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"}`}>{formatPercent(jobCalc.margin)} margin</span>
                       </div>
                     </div>
 
@@ -695,12 +770,19 @@ export default function App() {
                   <div className="text-[10px] tracking-[0.2em] text-[#71717A] mb-2">INTERPRETATION</div>
                   <p className="text-[13px] leading-[1.6] text-[#A1A1AA]">
                     {jobCalc.margin < 0
-                      ? `Losing ${formatCurrency(Math.abs(jobCalc.net))} on this job. Revenue ${formatCurrency(jobCalc.rev)} doesn't cover ${formatCurrency(jobCalc.totalCost)} cost. Raise price to at least ${formatCurrency(jobCalc.required || jobCalc.totalCost * 1.2)}.`
+                      ? `Losing ${formatCurrency(Math.abs(jobCalc.net))} on this job. Revenue ${formatCurrency(jobCalc.rev)} doesn't cover ${formatCurrency(jobCalc.totalCost)} cost. Raise price to at least ${formatCurrency(jobCalc.required)} to hit a ${formatPercent(jobCalc.target)} target margin.`
                       : jobCalc.margin < 10
-                      ? `Thin margin at ${formatPercent(jobCalc.margin)}. Net ${formatCurrency(jobCalc.net)} on ${formatCurrency(jobCalc.rev)} revenue. Effective ${formatCurrency(jobCalc.effHourly)}/hr. Consider reducing overhead or raising rate.`
+                      ? `Thin margin at ${formatPercent(jobCalc.margin)}. Net ${formatCurrency(jobCalc.net)} on ${formatCurrency(jobCalc.rev)} revenue. Effective ${formatCurrency(jobCalc.effHourly)}/h after labor, materials, overhead, and taxes.`
                       : jobCalc.margin < 25
-                      ? `Moderate at ${formatPercent(jobCalc.margin)}. Net ${formatCurrency(jobCalc.net)} is healthy but has room. At ${formatHours(jobCalc.hrs)} labor, you earn ${formatCurrency(jobCalc.effHourly)}/hr after costs.`
-                      : `Strong — ${formatPercent(jobCalc.margin)} margin, ${formatCurrency(jobCalc.net)} net. Effective ${formatCurrency(jobCalc.effHourly)}/hr over ${formatHours(jobCalc.hrs)}. Good pricing power.`}
+                      ? `Moderate at ${formatPercent(jobCalc.margin)}. Net ${formatCurrency(jobCalc.net)} is healthy but has room. At ${formatHours(jobCalc.hrs)} labor, you earn ${formatCurrency(jobCalc.effHourly)}/h before tax.`
+                      : `Strong — ${formatPercent(jobCalc.margin)} margin, ${formatCurrency(jobCalc.net)} net. Effective ${formatCurrency(jobCalc.effHourly)}/hr over ${formatHours(jobCalc.hrs)}. Good job profit with a solid buffer.`}
+                  </p>
+                </div>
+
+                <div className="border border-white/[0.06] bg-[#0A0A0E] p-5" style={clipSmall}>
+                  <div className="text-[10px] tracking-[0.2em] text-[#71717A] mb-3">JOB PROFIT EXPLAINED</div>
+                  <p className="text-[13px] leading-[1.7] text-[#A1A1AA]">
+                    Job profit is the money left after revenue is reduced by materials, labor, overhead, and taxes. The revenue figure sets the top line, while materials, labor, and overhead explain the real cost of doing the work. Your profit margin shows how much of the revenue becomes net profit, and the effective hourly rate tells you what the job is really earning per hour once all costs are counted.
                   </p>
                 </div>
               </div>
@@ -709,7 +791,7 @@ export default function App() {
         )}
 
         {view === "tool-hourly-rate" && (
-          <ToolLayout number="02" name="HOURLY RATE CALCULATOR" desc="Price your time to cover income, expenses, profit and taxes." onBack={() => setView("home")} search={search}>
+          <ToolLayout number="02" name="HOURLY RATE CALCULATOR" desc="Price your time to cover income, expenses, profit and taxes." onBack={() => setPathView("home")} search={search}>
             <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-5 md:gap-6">
               <div className="border border-white/[0.07] bg-[#0E0E13] p-6 md:p-7" style={clipStyle}>
                 <div className="flex items-center gap-2 mb-6"><span className="w-6 h-px bg-[#E11D33]" /><span className="text-[10px] tracking-[0.2em] text-[#A1A1AA]">INPUTS</span></div>
@@ -733,9 +815,9 @@ export default function App() {
               <div className="space-y-4">
                 <div className="border border-[#E11D33]/20 bg-[#12121A] p-6 md:p-7" style={clipStyle}>
                   <div className="absolute top-0 left-0 right-0 h-px bg-[#E11D33]/40" />
-                  <div className="flex items-center justify-between mb-6"><span className="text-[10px] tracking-[0.2em] text-[#A1A1AA]">YOUR SUSTAINABLE RATE</span><CopyButton text={`${formatCurrency(hourlyCalc.hourlyRate)}/hr — ${formatCurrency(hourlyCalc.totalNeeded)} annual needed`} /></div>
+                  <div className="flex items-center justify-between mb-6"><span className="text-[10px] tracking-[0.2em] text-[#A1A1AA]">YOUR SUSTAINABLE RATE</span><CopyButton text={`${formatCurrency(hourlyCalc.hourlyRate)} /hr`} /></div>
                   <div className="text-[42px] font-bold leading-none mono text-white">{formatCurrency(hourlyCalc.hourlyRate)}<span className="text-[18px] text-[#71717A] font-normal"> /hr</span></div>
-                  <div className="mt-3 text-[12px] text-[#A1A1AA]">Based on {hourlyCalc.annualBillable.toFixed(0)} real billable hours / year ({hourlyCalc.realPerWeek.toFixed(1)}h/week after {hourlyCalc.nonBill}% non-billable).</div>
+                  <div className="mt-3 text-[12px] text-[#A1A1AA]">Based on {hourlyCalc.annualBillable.toFixed(0)} real billable hours / year ({hourlyCalc.realPerWeek.toFixed(1)}h/week after {hourlyCalc.nonBill.toFixed(0)}% non-billable).</div>
 
                   <div className="mt-6 grid grid-cols-3 gap-3">
                     <div className="border border-white/10 bg-black/30 p-3" style={clipSmall}><div className="text-[10px] text-[#71717A]">DAILY</div><div className="mono text-white mt-1">{formatCurrency(hourlyCalc.daily)}</div></div>
@@ -752,7 +834,7 @@ export default function App() {
                 <div className="border border-white/10 bg-[#0A0A0E] p-5" style={clipSmall}>
                   <div className="text-[10px] tracking-[0.2em] text-[#71717A] mb-2">HOW IT BREAKS DOWN</div>
                   <p className="text-[13px] leading-[1.6] text-[#A1A1AA]">
-                    To earn {formatCurrency(hourlyCalc.salary)} after {formatCurrency(hourlyCalc.expenses)} expenses and {formatCurrency(hourlyCalc.buffer)} buffer, you need {formatCurrency(hourlyCalc.totalNeeded)} gross ({hourlyCalc.taxP}% tax). At {hourlyCalc.realPerWeek.toFixed(1)} effective hours/week × {hourlyCalc.weeks} weeks, charge at least {formatCurrency(hourlyCalc.hourlyRate)}/hr. Anything below that means you’re subsidizing the work.
+                    To earn {formatCurrency(hourlyCalc.salary)} after {formatCurrency(hourlyCalc.expenses)} expenses and {formatCurrency(hourlyCalc.buffer)} buffer, you need {formatCurrency(hourlyCalc.totalNeeded)} across {hourlyCalc.annualBillable.toFixed(0)} real billable hours / year. That creates a sustainable hourly rate that covers income, taxes, non-billable time, and business costs.
                   </p>
                 </div>
               </div>
@@ -761,7 +843,7 @@ export default function App() {
         )}
 
         {view === "tool-interruption" && (
-          <ToolLayout number="03" name="INTERRUPTION COST CALCULATOR" desc="See the real cost of small daily interruptions." onBack={() => setView("home")} search={search}>
+          <ToolLayout number="03" name="INTERRUPTION COST CALCULATOR" desc="See the real cost of small daily interruptions." onBack={() => setPathView("home")} search={search}>
             <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-5 md:gap-6">
               <div className="border border-white/[0.07] bg-[#0E0E13] p-6 md:p-7" style={clipStyle}>
                 <div className="flex items-center gap-2 mb-6"><span className="w-6 h-px bg-[#E11D33]" /><span className="text-[10px] tracking-[0.2em] text-[#A1A1AA]">INPUTS</span></div>
@@ -780,7 +862,7 @@ export default function App() {
 
               <div className="space-y-4">
                 <div className="border border-[#E11D33]/20 bg-[#12121A] p-6 md:p-7" style={clipStyle}>
-                  <div className="flex items-center justify-between mb-6"><span className="text-[10px] tracking-[0.2em] text-[#A1A1AA]">COST — LIVE</span><CopyButton text={`Daily cost: ${formatCurrency(interruptCalc.dailyCost)}\nAnnual: ${formatCurrency(interruptCalc.annualCost)}\nHours lost: ${interruptCalc.annualHours.toFixed(0)}h\nFTE: ${interruptCalc.fte.toFixed(2)}`} /></div>
+                  <div className="flex items-center justify-between mb-6"><span className="text-[10px] tracking-[0.2em] text-[#A1A1AA]">COST — LIVE</span><CopyButton text={`Daily cost: ${formatCurrency(interruptCalc.dailyCost)}\nAnnual cost: ${formatCurrency(interruptCalc.annualCost)}`} /></div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div><div className="text-[10px] text-[#71717A]">DAILY COST</div><div className="text-[24px] font-bold mono text-white mt-1">{formatCurrency(interruptCalc.dailyCost)}</div></div>
@@ -803,7 +885,7 @@ export default function App() {
                   <div className="text-[10px] tracking-[0.2em] text-[#71717A] mb-2">INTERPRETATION</div>
                   <p className="text-[13px] leading-[1.6] text-[#A1A1AA]">
                     {interruptCalc.employees} people × {interruptCalc.perDay} interruptions × {interruptCalc.minutes} minutes = {interruptCalc.dailyTotal.toFixed(1)}h lost daily.
-                    That's {formatCurrency(interruptCalc.dailyCost)}/day, {formatCurrency(interruptCalc.annualCost)}/year — roughly {interruptCalc.fte.toFixed(2)} full-time person doing nothing but recovering from interruptions.
+                    That’s {formatCurrency(interruptCalc.dailyCost)}/day, {formatCurrency(interruptCalc.annualCost)}/year — roughly {interruptCalc.fte.toFixed(2)} full-time people equivalent in lost time.
                     {interruptCalc.fte > 1 ? " Even a 30% reduction saves significant capacity." : " Small process changes (quiet hours, batch communication) can recover most of this."}
                   </p>
                 </div>
@@ -831,7 +913,7 @@ export default function App() {
               <div>
                 <div className="text-[10px] tracking-[0.22em] text-[#71717A] mb-4">COMPANY</div>
                 <div className="space-y-2.5 text-[12px] text-[#A1A1AA]">
-                  <button onClick={() => setView("about")} className="block hover:text-white">About</button>
+                  <button onClick={() => setPathView("about")} className="block hover:text-white">About</button>
                   <span className="block">Contact — hello@geeskit.com</span>
                   <span className="block">Privacy — Private by design</span>
                   <span className="block">Terms — Free tools, no account</span>
@@ -850,7 +932,7 @@ export default function App() {
 
             <div>
               <div className="text-[10px] tracking-[0.22em] text-[#71717A] mb-4">GEESKIT.COM</div>
-              <div className="text-[11px] leading-[1.6] text-[#52525B]">100% free. No tracking. Calculations stay in your browser. Built as an environment for useful digital experiences — calculators are only the beginning.</div>
+              <div className="text-[11px] leading-[1.6] text-[#52525B]">100% free. No tracking. Calculations stay in your browser. Built as an environment for useful digital experiences — calculators, tools, and practical answers.</div>
               <div className="mt-4 flex gap-2">
                 <span className="h-7 w-7 border border-white/10 bg-white/[0.03] flex items-center justify-center text-[10px] text-[#71717A]">X</span>
                 <span className="h-7 w-7 border border-white/10 bg-white/[0.03] flex items-center justify-center text-[10px] text-[#71717A]">IG</span>
