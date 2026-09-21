@@ -20,7 +20,7 @@ Original upload: `public/Metallic_Red_Logo.jpg`
 ## Structure
 ```
 src/
-  App.tsx        ← full app, 3 tools, search, routing
+  App.tsx        ← full app, 3 tools, search, routing, products
   main.tsx
   index.css
   assets/
@@ -50,7 +50,7 @@ npm run preview
 ```
 
 ## Deploy
-META AI → GITHUB → CLOUDFLARE PAGES → GEESKIT.COM
+META AI → GITHUB → CLOUDFLARE → GEESKIT.COM
 - Build command: `npm run build`
 - Output: `dist`
 - No env vars needed
