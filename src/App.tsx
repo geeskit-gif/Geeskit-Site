@@ -156,7 +156,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
             <button key={item.label} onClick={() => { setView("home"); setTimeout(() => document.getElementById(item.target)?.scrollIntoView({behavior:"smooth"}), 20); onAction?.(`OPEN ${item.label}`); }} className="relative text-[11px] tracking-[0.18em] font-medium py-2 text-[#A1A1AA] hover:text-white transition-colors">
               {item.label}
             </button>
-          ))
+          ))}
         </nav>
 
         <div className="flex items-center gap-3">
