@@ -39,8 +39,8 @@ function getPathForView(view: View) {
 
 const METADATA: Record<View, { title: string; description: string; canonical: string }> = {
   home: {
-    title: "GEESKIT — Useful Tools",
-    description: "Useful tools. Real answers. For work, business and everyday decisions.",
+    title: "GEESKIT — Tools, Wisdom & Experiments",
+    description: "Tools, practical knowledge, experiments and systems for making the next decision easier.",
     canonical: "https://geeskit.com/",
   },
   "tool-job-profit": {
@@ -148,19 +148,15 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
 
         <nav className="hidden md:flex items-center gap-8">
           {[
-            { label: "TOOLS", active: view.startsWith("tool-") || view === "home", id: "home" as View },
-            { label: "ANSWERS", active: view === "answers", id: "answers" as View },
-            { label: "ABOUT", active: view === "about", id: "about" as View },
+            { label: "TOOLS", target: "tools-section" },
+            { label: "WISDOM", target: "wisdom-section" },
+            { label: "EXPERIMENTS", target: "experiments-section" },
+            { label: "PRODUCTS", target: "products-section" },
           ].map((item) => (
-            <button
-              key={item.label}
-              onClick={() => { setView(item.id); onAction?.(`OPEN ${item.label}`); if(item.id === "home") { setTimeout(() => document.getElementById("tools-section")?.scrollIntoView({behavior:"smooth"}), 8); } }}
-              className={`relative text-[11px] tracking-[0.18em] font-medium py-2 ${item.active ? "text-white" : "text-[#A1A1AA] hover:text-white"} transition-colors`}
-            >
+            <button key={item.label} onClick={() => { setView("home"); setTimeout(() => document.getElementById(item.target)?.scrollIntoView({behavior:"smooth"}), 20); onAction?.(`OPEN ${item.label}`); }} className="relative text-[11px] tracking-[0.18em] font-medium py-2 text-[#A1A1AA] hover:text-white transition-colors">
               {item.label}
-              {item.active && <span className="absolute -bottom-[18px] left-0 right-0 h-[2px] bg-[#E11D33]" />}
             </button>
-          ))}
+          ))
         </nav>
 
         <div className="flex items-center gap-3">
@@ -179,14 +175,15 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
         <div className="md:hidden border-t border-white/[0.07] bg-[#08080C]">
           <div className="px-5 py-6 space-y-4">
             {[
-              { label: "TOOLS", id: "home" as View },
-              { label: "ANSWERS", id: "answers" as View },
-              { label: "ABOUT", id: "about" as View },
+              { label: "TOOLS", target: "tools-section" },
+              { label: "WISDOM", target: "wisdom-section" },
+              { label: "EXPERIMENTS", target: "experiments-section" },
+              { label: "PRODUCTS", target: "products-section" },
             ].map((l) => (
-              <button key={l.label} onClick={() => { setView(l.id); setMobileOpen(false); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2 hover:text-white">
+              <button key={l.label} onClick={() => { setView("home"); setMobileOpen(false); setTimeout(() => document.getElementById(l.target)?.scrollIntoView({behavior:"smooth"}), 20); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2 hover:text-white">
                 {l.label}
               </button>
-            ))}
+            ))
             <div className="pt-4 text-[10px] tracking-[0.2em] text-[#71717A]">MAKE THE NEXT DECISION EASIER — GEESKIT.COM</div>
           </div>
         </div>
@@ -451,237 +448,154 @@ export default function App() {
       <main className="relative z-10">
         {view === "home" && (
           <>
-            {/* HERO */}
-            <section className="mx-auto max-w-[1280px] px-5 md:px-8 pt-10 md:pt-20 pb-10 md:pb-16">
-              <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-10 md:gap-12 items-start">
-                {/* Left text */}
-                <div className="order-2 md:order-1">
-                  <div className="flex items-center gap-2 mb-6">
-                    <span className="w-8 h-px bg-[#E11D33]" />
-                    <span className="text-[10px] tracking-[0.28em] text-[#A1A1AA]">GEESKIT — USEFUL TOOLS</span>
-                  </div>
-                  <h1 className="text-[34px] md:text-[56px] leading-[0.92] tracking-[-0.02em] font-bold">
-                    <span className="block text-white">MAKE THE NEXT DECISION</span>
-                    <span className="block text-[#E11D33]">EASIER.</span>
-                  </h1>
-                  <p className="mt-6 text-[16px] md:text-[18px] leading-[1.5] text-[#A1A1AA] max-w-[460px]">
-                    Useful tools. Real answers.<br />For work, business and everyday decisions.
-                  </p>
-
-                  <div className="mt-10">
-                    <div className="text-[10px] tracking-[0.22em] text-[#71717A] mb-3">WHAT ARE YOU TRYING TO FIGURE OUT?</div>
-                    <div className="flex gap-2 max-w-[520px] w-full">
-                      <div className="flex-1 relative">
-                        <input
-                          id="hero-search"
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                          placeholder="Describe your question or find a tool..."
-                          className="w-full h-[52px] bg-[#0E0E13] border border-white/[0.08] px-4 pr-10 text-[14px] text-white placeholder:text-[#52525B] focus:outline-none focus:border-[#E11D33]/50 transition-colors"
-                          style={clipSmall}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#52525B]">⌕</span>
-                      </div>
-                      <button
-                        onClick={() => {
-                          if (search) document.getElementById("tools-section")?.scrollIntoView({ behavior: "smooth" });
-                          showToast(search ? `SEARCH: ${search}` : "BROWSE TOOLS");
-                        }}
-                        className="h-[52px] w-[52px] flex items-center justify-center bg-[#E11D33] text-white hover:bg-[#C91A2E] transition-colors"
-                        style={clipSmall}
-                      >
-                        <span className="text-[18px]">→</span>
-                      </button>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-2 max-w-[520px]">
-                      <span className="text-[10px] tracking-[0.15em] text-[#52525B] py-1">POPULAR:</span>
-                      {[
-                        { label: "Job profit", q: "job profit" },
-                        { label: "Hourly rate", q: "hourly" },
-                        { label: "Interruption cost", q: "interruption" },
-                        { label: "Pricing", q: "pricing" },
-                        { label: "Budget", q: "budget" },
-                      ].map((p) => (
-                        <button
-                          key={p.label}
-                          onClick={() => { setSearch(p.q); showToast(`FILTER: ${p.label}`); }}
-                          className="h-7 px-3 text-[11px] tracking-[0.08em] border border-white/[0.08] bg-white/[0.03] text-[#A1A1AA] hover:text-white hover:border-white/15 transition-colors"
-                          style={clipSmall}
-                        >
-                          {p.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-12 grid grid-cols-3 gap-6 max-w-[520px] border-t border-white/[0.06] pt-6">
-                    <div>
-                      <div className="text-[20px] font-semibold text-white mono">3</div>
-                      <div className="text-[10px] tracking-[0.15em] text-[#71717A]">LIVE TOOLS</div>
-                    </div>
-                    <div>
-                      <div className="text-[20px] font-semibold text-white mono">100%</div>
-                      <div className="text-[10px] tracking-[0.15em] text-[#71717A]">FREE & PRIVATE</div>
-                    </div>
-                    <div>
-                      <div className="text-[20px] font-semibold text-white mono">∞</div>
-                      <div className="text-[10px] tracking-[0.15em] text-[#71717A]">MORE COMING</div>
-                    </div>
-                  </div>
+            {/* GEESKIT TERRITORY */}
+            <section className="mx-auto max-w-[1280px] px-5 md:px-8 pt-14 md:pt-24 pb-12 md:pb-20">
+              <div className="max-w-[1040px]">
+                <div className="flex items-center gap-3 mb-7">
+                  <span className="w-10 h-px bg-[#E11D33]" />
+                  <span className="text-[10px] tracking-[0.3em] text-[#A1A1AA]">GEESKIT / DIGITAL TERRITORY</span>
                 </div>
+                <h1 className="text-[42px] md:text-[78px] leading-[0.88] tracking-[-0.04em] font-bold">
+                  <span className="block text-white">USEFUL THINGS.</span>
+                  <span className="block text-[#E11D33]">STRANGE THINGS.</span>
+                  <span className="block text-white">SMART THINGS.</span>
+                </h1>
+                <p className="mt-8 max-w-[650px] text-[16px] md:text-[19px] leading-[1.55] text-[#A1A1AA]">
+                  Tools, practical knowledge, experiments and systems for making the next decision easier.
+                </p>
+              </div>
 
-                {/* Right logo display */}
-                <div className="order-1 md:order-2 relative">
-                  <div className="absolute -inset-6 md:-inset-10 opacity-40 pointer-events-none">
-                    <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,_rgba(225,29,51,0.18),transparent_60%)] blur-[30px]" />
-                  </div>
-                  <div className="relative border border-white/[0.06] bg-[#08080C] p-3 md:p-5 max-w-full overflow-hidden" style={clipStyle}>
-                    <div className="absolute top-0 left-0 w-[22px] h-[22px] border-t border-l border-white/15" />
-                    <div className="absolute bottom-0 right-0 w-[22px] h-[22px] border-b border-r border-white/15" />
-                    <img src={geeskitLogo} alt="GEESKIT Logo - architectural mark with GEESKIT text" className="w-full max-w-[520px] aspect-[4/3] object-contain bg-black mx-auto" />
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-[10px] tracking-[0.22em] text-[#71717A] mono">GEESKIT.COM / IDENTITY v01</span>
-                      <span className="w-2 h-2 bg-[#E11D33] inline-block" style={{ clipPath: "polygon(50% 0,100% 50%,50% 100%,0 50%)" }} />
-                    </div>
-                  </div>
-                  {/* diagonal accent */}
-                  <div className="hidden md:block absolute -bottom-6 -left-6 w-[80px] h-[1px] bg-[#E11D33]/60 rotate-[-45deg] origin-left" />
+              <div className="mt-12 border-y border-white/[0.07] bg-[#08080C]">
+                <div className="grid grid-cols-2 md:grid-cols-4">
+                  {[
+                    ["TOOLS","USE SOMETHING"],
+                    ["WISDOM","LEARN SOMETHING"],
+                    ["EXPERIMENTS","EXPLORE SOMETHING"],
+                    ["PRODUCTS","BUILD WITH SOMETHING"],
+                  ].map(([label,sub], i) => (
+                    <button
+                      key={label}
+                      onClick={() => {
+                        const id = label === "TOOLS" ? "tools-section" : label === "PRODUCTS" ? "products-section" : label === "WISDOM" ? "wisdom-section" : "experiments-section";
+                        document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
+                      }}
+                      className="text-left p-5 md:p-6 border-r border-b md:border-b-0 border-white/[0.07] hover:bg-white/[0.025] transition-colors"
+                    >
+                      <div className="text-[11px] tracking-[0.22em] text-[#E11D33]">{String(i+1).padStart(2,"0")}</div>
+                      <div className="mt-3 text-[15px] tracking-[0.12em] font-semibold text-white">{label}</div>
+                      <div className="mt-1 text-[10px] tracking-[0.16em] text-[#71717A]">{sub}</div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </section>
 
             <ValueStrip />
 
-            {/* Tools Section */}
-            <section id="tools-section" className="mx-auto max-w-[1280px] px-5 md:px-8 py-14 md:py-20">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            {/* TOOLS */}
+            <section id="tools-section" className="mx-auto max-w-[1280px] px-5 md:px-8 pt-16 md:pt-24 scroll-mt-20">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-[11px] tracking-[0.28em] text-[#E11D33] mono">01 / TOOLS</span>
-                    <span className="w-10 h-px bg-white/10" />
-                  </div>
-                  <h2 className="text-[28px] md:text-[40px] leading-[0.95] font-bold tracking-[-0.01em]">
-                    <span className="text-white">USEFUL TOOLS.</span> <span className="text-[#E11D33]">REAL IMPACT.</span>
-                  </h2>
+                  <div className="flex items-center gap-2 mb-3"><span className="w-7 h-px bg-[#E11D33]" /><span className="text-[10px] tracking-[0.25em] text-[#71717A]">01 / TOOLS</span></div>
+                  <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] text-white">USEFUL, NOW.</h2>
+                  <p className="mt-3 text-[14px] text-[#A1A1AA] max-w-[560px]">Small tools that turn messy questions into clear numbers, decisions or next actions.</p>
                 </div>
-                <p className="max-w-[360px] text-[13px] leading-[1.6] text-[#A1A1AA]">
-                  Carefully built calculators that give you clear answers. No fake data. No marketing fluff. Just results you can act on.
-                </p>
+                <div className="w-full md:w-[360px]">
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search tools..."
+                    className="w-full h-[46px] bg-[#0E0E13] border border-white/[0.08] px-4 text-[13px] text-white placeholder:text-[#52525B] focus:outline-none focus:border-[#E11D33]/50"
+                    style={clipSmall}
+                  />
+                </div>
               </div>
 
-              {filteredTools.length === 0 ? (
-                <div className="border border-white/10 bg-[#0E0E13] p-10 text-center" style={clipStyle}>
-                  <div className="text-[12px] tracking-[0.2em] text-[#71717A]">NO TOOLS MATCH “{search}”</div>
-                  <button onClick={() => { setSearch(""); setCategoryFilter(null); }} className="mt-4 h-10 px-5 bg-white text-black text-[11px] tracking-[0.18em]">CLEAR SEARCH</button>
-                </div>
-              ) : (
-                <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-                  {filteredTools.map((tool) => (
-                    <button
-                      key={tool.id}
-                      onClick={() => setPathView(tool.id)}
-                      className="group text-left border border-white/[0.07] bg-[#101014] hover:bg-[#12121A] hover:border-[#E11D33]/30 transition-all duration-200 p-6 md:p-7 flex flex-col min-h-[280px] relative overflow-hidden"
-                      style={clipStyle}
-                    >
-                      <div className="absolute top-0 right-0 w-[120px] h-[1px] bg-gradient-to-l from-[#E11D33]/40 to-transparent" />
-                      <div className="flex items-start justify-between mb-8">
-                        <span className="text-[11px] tracking-[0.2em] text-[#E11D33] mono border border-[#E11D33]/20 px-2 py-1 bg-[#E11D33]/10">{tool.number}</span>
-                        <span className="text-[10px] tracking-[0.18em] text-[#52525B] border border-white/10 px-2 py-1">{tool.category}</span>
-                      </div>
-                      <h3 className="text-[16px] leading-[1.2] font-semibold tracking-[0.02em] text-white group-hover:text-white transition-colors">{tool.name}</h3>
-                      <p className="mt-3 text-[13px] leading-[1.5] text-[#A1A1AA] flex-1">{tool.desc}</p>
-                      <div className="mt-8 flex items-center gap-3">
-                        <span className="text-[11px] tracking-[0.18em] text-white group-hover:text-[#E11D33] transition-colors">OPEN TOOL</span>
-                        <span className="w-8 h-px bg-white/20 group-hover:bg-[#E11D33]/60 group-hover:w-12 transition-all" />
-                        <span className="text-white group-hover:translate-x-1 transition-transform">→</span>
-                      </div>
-                      <div className="absolute bottom-0 left-6 right-6 h-px bg-white/[0.04] group-hover:bg-[#E11D33]/20 transition-colors" />
-                    </button>
-                  ))}
-                </div>
-              )}
+              <div className="flex flex-wrap gap-2 mt-7">
+                <button onClick={() => setCategoryFilter(null)} className={`h-8 px-3 text-[10px] tracking-[0.14em] border ${!categoryFilter ? "border-[#E11D33]/50 text-white bg-[#E11D33]/10" : "border-white/10 text-[#71717A]"}`}>ALL</button>
+                {CATEGORIES.filter(c => !c.soon || TOOLS.some(t => t.category === c.id)).map(c => (
+                  <button key={c.id} onClick={() => setCategoryFilter(c.id)} className={`h-8 px-3 text-[10px] tracking-[0.14em] border ${categoryFilter === c.id ? "border-[#E11D33]/50 text-white bg-[#E11D33]/10" : "border-white/10 text-[#71717A]"}`}>{c.id}</button>
+                ))}
+              </div>
 
-              <div className="mt-10 flex justify-center">
-                <button onClick={scrollToTools} className="h-11 px-8 border border-white/10 bg-white/[0.02] text-[11px] tracking-[0.22em] text-[#A1A1AA] hover:text-white hover:border-white/20 transition-colors" style={clipSmall}>
-                  VIEW ALL TOOLS — {TOOLS.length} LIVE
-                </button>
+              <div className="grid md:grid-cols-3 gap-4 md:gap-5 mt-8">
+                {filteredTools.map((tool) => (
+                  <button key={tool.id} onClick={() => navigate(tool.id)} className="group text-left border border-white/[0.07] bg-[#0A0A0E] p-6 hover:border-[#E11D33]/35 hover:bg-[#0D0D12] transition-all" style={clipStyle}>
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] tracking-[0.2em] text-[#E11D33] mono">{tool.number}</span>
+                      <span className="text-[9px] tracking-[0.15em] text-[#52525B]">{tool.category}</span>
+                    </div>
+                    <h3 className="mt-12 text-[17px] font-semibold tracking-[0.03em] text-white">{tool.name}</h3>
+                    <p className="mt-3 text-[13px] leading-[1.55] text-[#A1A1AA]">{tool.desc}</p>
+                    <div className="mt-7 text-[10px] tracking-[0.2em] text-[#E11D33]">OPEN TOOL →</div>
+                  </button>
+                ))}
               </div>
             </section>
 
-            {/* Need-based categories */}
-            <section className="border-t border-white/[0.06] bg-[#08080C]">
-              <div className="mx-auto max-w-[1280px] px-5 md:px-8 py-14 md:py-20">
-                <div className="mb-10">
-                  <h2 className="text-[24px] md:text-[32px] leading-[1] font-bold">
-                    <span className="text-white">FIND THE RIGHT TOOL FOR</span> <span className="text-[#E11D33]">WHAT MATTERS.</span>
-                  </h2>
+            {/* PRODUCTS */}
+            <section id="products-section" className="mx-auto max-w-[1280px] px-5 md:px-8 pt-24 scroll-mt-20">
+              <div className="flex items-center gap-2 mb-3"><span className="w-7 h-px bg-[#E11D33]" /><span className="text-[10px] tracking-[0.25em] text-[#71717A]">02 / PRODUCTS</span></div>
+              <div className="grid md:grid-cols-[0.72fr_1.28fr] gap-8 items-end">
+                <div>
+                  <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] text-white">SYSTEMS THAT<br/><span className="text-[#E11D33]">DO MORE.</span></h2>
                 </div>
-                <div className="grid md:grid-cols-5 gap-3">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.id}
-                      disabled={!!cat.soon}
-                      onClick={() => {
-                        if (!cat.soon) {
-                          setCategoryFilter(cat.id);
-                          document.getElementById("tools-section")?.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }}
-                      className={`text-left border p-5 transition-all ${cat.soon ? "border-white/[0.04] bg-[#0A0A0E] opacity-60 cursor-not-allowed" : "border-white/[0.07] bg-[#101014] hover:border-[#E11D33]/30"}`}
-                      style={clipSmall}
-                    >
-                      <div className="flex items-start justify-between mb-6">
-                        <span className="w-8 h-8 flex items-center justify-center border border-[#E11D33]/20 bg-[#E11D33]/10 text-[#E11D33] text-[14px]">{cat.icon}</span>
-                        {!cat.soon && <span className="text-white">→</span>}
-                      </div>
-                      <div className="text-[12px] font-semibold tracking-[0.05em] text-white leading-[1.2]">{cat.id}</div>
-                      <div className="mt-2 text-[11px] text-[#71717A]">{cat.desc}</div>
-                      {cat.soon && <div className="mt-3 text-[9px] tracking-[0.18em] text-[#52525B] border border-white/10 inline-block px-2 py-1">COMING SOON</div>}
-                    </button>
+                <p className="text-[14px] leading-[1.6] text-[#A1A1AA] max-w-[620px]">When a useful idea grows beyond a simple tool, it becomes a product. GEESKIT is the discovery layer; the product runs in its own environment.</p>
+              </div>
+
+              <a href="https://mw.geeskit.com" className="mt-8 block border border-[#E11D33]/25 bg-[#0B0B10] p-7 md:p-9 hover:border-[#E11D33]/55 transition-colors" style={clipStyle}>
+                <div className="grid md:grid-cols-[1fr_auto] gap-8 items-end">
+                  <div>
+                    <div className="text-[10px] tracking-[0.25em] text-[#E11D33]">MW / MEASUREMENT WALLET</div>
+                    <h3 className="mt-4 text-[28px] md:text-[38px] font-bold tracking-[-0.025em] text-white">COLLECT GROUP SIZES<br/>WITH CONFIDENCE.</h3>
+                    <p className="mt-4 text-[14px] leading-[1.55] text-[#A1A1AA] max-w-[600px]">Create a group, share one link, collect submissions, review everything and export a clean CSV.</p>
+                  </div>
+                  <div className="md:text-right">
+                    <div className="text-[10px] tracking-[0.2em] text-[#71717A]">FREE TO START</div>
+                    <div className="mt-2 text-[12px] tracking-[0.14em] text-white">PRO / $9 MONTH</div>
+                    <div className="mt-5 text-[10px] tracking-[0.2em] text-[#E11D33]">OPEN MW →</div>
+                  </div>
+                </div>
+              </a>
+            </section>
+
+            {/* WISDOM */}
+            <section id="wisdom-section" className="mx-auto max-w-[1280px] px-5 md:px-8 pt-24 scroll-mt-20">
+              <div className="flex items-center gap-2 mb-3"><span className="w-7 h-px bg-[#E11D33]" /><span className="text-[10px] tracking-[0.25em] text-[#71717A]">03 / WISDOM</span></div>
+              <div className="grid md:grid-cols-[0.8fr_1.2fr] gap-10">
+                <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] text-white">KNOWLEDGE<br/><span className="text-[#E11D33]">YOU CAN USE.</span></h2>
+                <div className="grid gap-3">
+                  {[
+                    ["PRICE YOUR TIME","Your hourly rate is a business number, not a guess.","TOOLS →"],
+                    ["SEE THE HIDDEN COST","Small interruptions compound into real annual losses.","TOOLS →"],
+                    ["TURN OLD KNOWLEDGE INTO SOMETHING USEFUL","Historical knowledge, forgotten methods and practical intelligence — reconstructed for today.","COMING →"],
+                  ].map(([title,desc,cta]) => (
+                    <div key={title} className="border border-white/[0.07] bg-[#08080C] p-5 md:p-6">
+                      <div className="text-[13px] tracking-[0.08em] text-white">{title}</div>
+                      <div className="mt-2 text-[12px] leading-[1.5] text-[#A1A1AA]">{desc}</div>
+                      <div className="mt-4 text-[9px] tracking-[0.18em] text-[#71717A]">{cta}</div>
+                    </div>
                   ))}
+                </div>
+              </div>
+            </section>
+
+            {/* EXPERIMENTS */}
+            <section id="experiments-section" className="mx-auto max-w-[1280px] px-5 md:px-8 pt-24 pb-20 scroll-mt-20">
+              <div className="flex items-center gap-2 mb-3"><span className="w-7 h-px bg-[#E11D33]" /><span className="text-[10px] tracking-[0.25em] text-[#71717A]">04 / EXPERIMENTS</span></div>
+              <div className="border border-white/[0.07] bg-[#08080C] p-7 md:p-10" style={clipStyle}>
+                <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-10 items-end">
+                  <div>
+                    <h2 className="text-[30px] md:text-[48px] leading-[0.95] font-bold tracking-[-0.035em] text-white">SOME THINGS<br/>ARE BUILT JUST<br/><span className="text-[#E11D33]">TO SEE WHAT HAPPENS.</span></h2>
+                    <p className="mt-6 text-[14px] leading-[1.6] text-[#A1A1AA] max-w-[580px]">AI experiments, unusual interfaces, historical reconstruction, generators and ideas that don't belong in a conventional SaaS box.</p>
+                  </div>
+                  <div className="text-[10px] tracking-[0.2em] text-[#52525B] md:text-right">EXPERIMENTS / EMERGING</div>
                 </div>
               </div>
             </section>
           </>
         )}
 
-        {view === "about" && (
-          <section className="mx-auto max-w-[900px] px-5 md:px-8 py-12 md:py-20">
-            <button onClick={() => setPathView("home")} className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-[#A1A1AA] hover:text-white mb-8"><span>←</span> BACK</button>
-            <div className="border border-white/10 bg-[#0E0E13] p-8 md:p-12" style={clipStyle}>
-              <div className="flex items-center gap-4 mb-8">
-                <img src={geeskitLogo} alt="GEESKIT" className="h-12 w-auto object-contain bg-black border border-white/10" />
-                <div className="h-8 w-px bg-white/10" />
-                <div className="text-[11px] tracking-[0.2em] text-[#71717A]">BY ALMAGREMIUM</div>
-              </div>
-              <h1 className="text-[28px] md:text-[40px] font-bold leading-[0.95] text-white">MAKE THE NEXT<br /><span className="text-[#E11D33]">DECISION EASIER.</span></h1>
-              <div className="mt-8 space-y-5 text-[14px] leading-[1.7] text-[#A1A1AA]">
-                <p>GEESKIT is a free digital utility and discovery environment. It helps people figure things out, solve practical problems, understand situations, calculate things, make decisions, and move forward with clearer understanding.</p>
-                <p>Use GEESKIT to calculate job profit, estimate an hourly rate, understand the cost of employee interruptions, compare numbers, and get practical answers without creating an account.</p>
-                <p>Real problem → Useful experience → Answer / Result / Action. When a problem is recurring and valuable, it becomes a deeper system. GEESKIT is the free layer where useful digital experiences become practical tools.</p>
-                <div className="pt-6 border-t border-white/10">
-                  <div className="text-[11px] tracking-[0.2em] text-[#71717A]">WHAT GEESKIT IS NOT</div>
-                  <ul className="mt-3 space-y-2 text-[13px] text-[#71717A] list-disc pl-5">
-                    <li>Not a generic calculator website</li>
-                    <li>Not an AI tool directory or marketplace</li>
-                    <li>Not a SaaS landing page with fake social proof</li>
-                    <li>Not narrowed to one industry</li>
-                  </ul>
-                </div>
-                <div className="pt-6">
-                  <div className="text-[10px] tracking-[0.2em] text-[#52525B]">PRIVACY — All calculations stay in your browser. No tracking. No cookies. No server.</div>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {view === "answers" && (
-          <SEOContent onTool={(tool) => setPathView(tool)} />
-        )}
-
-        {/* TOOL PAGES */}
         {view === "tool-job-profit" && (
           <ToolLayout
             number="01"
