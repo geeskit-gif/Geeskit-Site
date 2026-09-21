@@ -33,7 +33,9 @@ public/
 - 01 Job Profit Calculator
 - 02 Hourly Rate Calculator
 - 03 Interruption Cost Calculator
-Architecture is extensible: add entries to TOOLS and new view handlers in App.tsx.
+
+## Products
+- MW / Measurement Wallet — free to start, Pro $9/month
 
 ## Run
 ```bash
