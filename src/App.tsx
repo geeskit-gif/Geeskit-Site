@@ -183,7 +183,7 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
               <button key={l.label} onClick={() => { setView("home"); setMobileOpen(false); setTimeout(() => document.getElementById(l.target)?.scrollIntoView({behavior:"smooth"}), 20); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2 hover:text-white">
                 {l.label}
               </button>
-            ))
+            ))}
             <div className="pt-4 text-[10px] tracking-[0.2em] text-[#71717A]">MAKE THE NEXT DECISION EASIER — GEESKIT.COM</div>
           </div>
         </div>
