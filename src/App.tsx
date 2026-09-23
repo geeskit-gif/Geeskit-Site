@@ -161,8 +161,9 @@ function formatHours(n: number) {
 }
 
 // Header
-function Header({ view, setView, onSearchFocus, onAction }: { view: View; setView: (v: View) => void; onSearchFocus: () => void; onAction?: (msg: string)=>void }) {
+function Header({ view, setView, onSearchFocus, onAction, language, setLanguage }: { view: View; setView: (v: View) => void; onSearchFocus: () => void; onAction?: (msg: string)=>void; language: Language; setLanguage: (l: Language) => void }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const copy = LANGUAGE_COPY[language];
   return (
     <header className="sticky top-0 z-50 bg-[#050507]/90 backdrop-blur-xl border-b border-white/[0.07]">
       <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
@@ -175,12 +176,9 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
         </button>
 
         <nav className="hidden md:flex items-center gap-8">
-          {[
-            { label: "TOOLS", target: "tools-section" },
-            { label: "WISDOM", target: "wisdom-section" },
-            { label: "EXPERIMENTS", target: "experiments-section" },
-            { label: "PRODUCTS", target: "products-section" },
-          ].map((item) => (
+          {copy.nav.map((label, index) => ([
+            { label, target: ["tools-section", "wisdom-section", "experiments-section", "products-section"][index] },
+          ]).map((item) => (
             <button key={item.label} onClick={() => { setView("home"); setTimeout(() => document.getElementById(item.target)?.scrollIntoView({behavior:"smooth"}), 20); onAction?.(`OPEN ${item.label}`); }} className="relative text-[11px] tracking-[0.18em] font-medium py-2 text-[#A1A1AA] hover:text-white transition-colors">
               {item.label}
             </button>
@@ -189,9 +187,15 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
 
         <div className="flex items-center gap-3">
           <button onClick={onSearchFocus} className="hidden md:flex h-8 px-3 items-center gap-2 border border-white/[0.08] bg-white/[0.03] text-[10px] tracking-[0.15em] text-[#A1A1AA] hover:text-white transition-colors" style={clipSmall}>
-            <span className="w-3 h-3 border border-current rounded-[1px] inline-block" /> SEARCH
+            <span className="w-3 h-3 border border-current rounded-[1px] inline-block" /> {copy.search}
           </button>
-          <div className="hidden md:block text-[10px] tracking-[0.15em] text-[#71717A] border border-white/10 px-2 py-1">EN</div>
+          <div className="hidden md:flex items-center gap-1 border border-white/10 px-1 py-1">
+            {(["en", "fr", "pt"] as Language[]).map((code) => (
+              <button key={code} type="button" onClick={() => setLanguage(code)} className={`px-2 py-0.5 text-[9px] tracking-[0.12em] ${language === code ? "text-[#E11D33] bg-white/[0.06]" : "text-[#71717A] hover:text-white"}`} aria-label={`${copy.language}: ${code.toUpperCase()}`}>
+                {code.toUpperCase()}
+              </button>
+            ))}
+          </div>
           <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-[5px] border border-white/10 bg-white/[0.02]">
             <span className={`w-4 h-[2px] bg-white transition-all ${mobileOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} />
             <span className={`w-4 h-[2px] bg-white transition-all ${mobileOpen ? "-rotate-45 -translate-y-[3.5px]" : ""}`} />
@@ -202,12 +206,9 @@ function Header({ view, setView, onSearchFocus, onAction }: { view: View; setVie
       {mobileOpen && (
         <div className="md:hidden border-t border-white/[0.07] bg-[#08080C]">
           <div className="px-5 py-6 space-y-4">
-            {[
-              { label: "TOOLS", target: "tools-section" },
-              { label: "WISDOM", target: "wisdom-section" },
-              { label: "EXPERIMENTS", target: "experiments-section" },
-              { label: "PRODUCTS", target: "products-section" },
-            ].map((l) => (
+            {copy.nav.map((label, index) => ([
+              { label, target: ["tools-section", "wisdom-section", "experiments-section", "products-section"][index] },
+            ]).map((l) => (
               <button key={l.label} onClick={() => { setView("home"); setMobileOpen(false); setTimeout(() => document.getElementById(l.target)?.scrollIntoView({behavior:"smooth"}), 20); onAction?.(`OPEN ${l.label}`); }} className="block text-left text-[13px] tracking-[0.18em] text-[#F5F5F7] py-2 hover:text-white">
                 {l.label}
               </button>
@@ -286,6 +287,7 @@ function CopyButton({ text }: { text: string }) {
 
 export default function App() {
   const [view, setView] = useState<View>(() => getViewFromPath(window.location.pathname));
+  const [language, setLanguage] = useState<Language>(() => (localStorage.getItem("geeskit-language") as Language) || "en");
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -463,7 +465,7 @@ export default function App() {
         <div className="absolute top-[18%] left-0 right-0 h-px bg-white" />
       </div>
 
-      <Header view={view} setView={navigate} onSearchFocus={scrollToTools} onAction={showToast} />
+      <Header view={view} setView={navigate} onSearchFocus={scrollToTools} onAction={showToast} language={language} setLanguage={setLanguage} />
       {toast && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
           <div className="bg-[#E11D33] text-white text-[11px] tracking-[0.18em] px-5 py-2.5 border border-white/20 shadow-2xl" style={clipSmall}>
@@ -518,7 +520,7 @@ export default function App() {
               </div>
             </section>
 
-            <ValueStrip />
+            <ValueStrip language={language} />
 
             {/* TOOLS */}
             <section id="tools-section" className="mx-auto max-w-[1280px] px-5 md:px-8 pt-16 md:pt-24 scroll-mt-20">
