@@ -2,6 +2,34 @@ import React, { useState, useMemo, useEffect } from "react";
 import SEOContent from "./pages/SEOContent";
 const geeskitLogo = "/geeskit-logo.jpg";
 
+type Language = "en" | "fr" | "pt";
+
+const LANGUAGE_COPY: Record<Language, {
+  nav: string[];
+  value: string[];
+  search: string;
+  language: string;
+}> = {
+  en: {
+    nav: ["TOOLS", "WISDOM", "EXPERIMENTS", "PRODUCTS"],
+    value: ["100% FREE", "PRACTICAL", "INSTANT ANSWERS", "BUILT FOR REAL USE"],
+    search: "SEARCH",
+    language: "LANGUAGE",
+  },
+  fr: {
+    nav: ["OUTILS", "SAVOIR", "EXPÉRIMENTATIONS", "PRODUITS"],
+    value: ["100 % GRATUIT", "PRATIQUE", "RÉPONSES INSTANTANÉES", "CONÇU POUR UN USAGE RÉEL"],
+    search: "RECHERCHE",
+    language: "LANGUE",
+  },
+  pt: {
+    nav: ["FERRAMENTAS", "CONHECIMENTO", "EXPERIMENTOS", "PRODUTOS"],
+    value: ["100% GRATUITO", "PRÁTICO", "RESPOSTAS INSTANTÂNEAS", "FEITO PARA USO REAL"],
+    search: "BUSCAR",
+    language: "IDIOMA",
+  },
+};
+
 // Types
 type View = "home" | "tool-job-profit" | "tool-hourly-rate" | "tool-interruption" | "about" | "answers";
 
