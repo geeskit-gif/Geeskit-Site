@@ -1,26 +1,45 @@
-# GEESKIT — MAKE THE NEXT DECISION EASIER.
+# GEESKIT — WEBHUB FOR MW & NOWYES
 
-Domain: geeskit.com
+Domain: geeskit.com  
 Parent: ALMAGREMIUM
 
-> Useful tools for figuring things out.
+> MAKE THE NEXT DECISION EASIER.
 
-GEESKIT is a free digital utility and discovery environment. Built client-side only, no backend, no tracking.
+GEESKIT is the public web hub and discovery layer for two practical digital products:
+
+- **MW / Measurement Wallet** — group-size collection and management.
+- **NOWYES** — practical life and paperwork guidance for migrants in Mexico.
+
+GEESKIT does not replace the products. Each product runs in its own environment.
+
+## Product environments
+
+- MW: https://mw.geeskit.com
+- NOWYES: https://nowyes.geeskitgsp.workers.dev/
+
+## Languages
+
+- English
+- French
+- Portuguese
 
 ## Stack
-- React 18 + TypeScript + Vite 6
-- Tailwind CSS 3
-- 100% client-side calculations
+
+- React 18 + TypeScript + Vite
+- Tailwind CSS
+- Client-side web hub
 
 ## Logo
+
 The official GEESKIT logo is in `public/geeskit-logo.jpg` and `src/assets/geeskit-logo.jpg`.
+
 This file is AUTHORITATIVE — do not redesign it.
-Original upload: `public/Metallic_Red_Logo.jpg`
 
 ## Structure
+
 ```
 src/
-  App.tsx        ← full app, 3 tools, search, routing, products
+  App.tsx        ← GEESKIT web hub
   main.tsx
   index.css
   assets/
@@ -29,34 +48,28 @@ public/
   geeskit-logo.jpg
 ```
 
-## Tools
-- 01 Job Profit Calculator
-- 02 Hourly Rate Calculator
-- 03 Interruption Cost Calculator
-
-## Products
-- MW / Measurement Wallet — free to start, Pro $9/month
-
 ## Run
+
 ```bash
 npm install
 npm run dev
 ```
 
 ## Build
+
 ```bash
 npm run build
 npm run preview
 ```
 
 ## Deploy
+
 META AI → GITHUB → CLOUDFLARE → GEESKIT.COM
+
 - Build command: `npm run build`
 - Output: `dist`
-- No env vars needed
 
-## Privacy
-All inputs stay in browser. No analytics that requires personal data.
+## ©
 
-© 2026 Almagremium. All rights reserved.
+© 2026 Almagremium. All rights reserved.  
 Created by Giselle Sierra Pérez
