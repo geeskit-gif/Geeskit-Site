@@ -213,7 +213,7 @@ function Header({ view, setView, onSearchFocus, onAction, language, setLanguage 
                 {l.label}
               </button>
             ))}
-            <div className="pt-4 text-[10px] tracking-[0.2em] text-[#71717A]">MAKE THE NEXT DECISION EASIER — GEESKIT.COM</div>
+            <div className="pt-4 flex gap-1">{(["en", "fr", "pt"] as Language[]).map((code) => (<button key={code} type="button" onClick={() => setLanguage(code)} className={`px-2 py-1 border border-white/10 text-[9px] tracking-[0.12em] ${language === code ? "text-[#E11D33]" : "text-[#71717A]"}`}>{code.toUpperCase()}</button>))}</div>\n            <div className="pt-3 text-[10px] tracking-[0.2em] text-[#71717A]">MAKE THE NEXT DECISION EASIER — GEESKIT.COM</div>
           </div>
         </div>
       )}
