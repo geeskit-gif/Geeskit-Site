@@ -10,14 +10,6 @@ const PRODUCTS = [
     desc: 'A focused business application for collecting group sizes, reviewing submissions and exporting clean data.',
     href: 'https://mw.geeskit.com',
     cta: 'OPEN MW →'
-  },
-  {
-    code: '02',
-    title: 'DYK',
-    type: 'SOFTWARE PRODUCT',
-    desc: 'A GEESKIT knowledge product built to turn information into a usable digital experience.',
-    href: '#',
-    cta: 'DYK / PRODUCT'
   }
 ];
 
@@ -116,7 +108,7 @@ export default function App() {
               <span className="text-[10px] tracking-[0.25em] text-[#71717A]">CURRENT PRODUCTS</span>
             </div>
             <h2 className="text-[38px] font-bold tracking-[-0.04em] md:text-[58px]">SOFTWARE PRODUCTS.</h2>
-            <p className="mt-4 max-w-[680px] text-[14px] leading-[1.7] text-[#A1A1AA]">MW and DYK are current GEESKIT products. Future products extend the same technology business.</p>
+            <p className="mt-4 max-w-[680px] text-[14px] leading-[1.7] text-[#A1A1AA]">MW is a current GEESKIT product. Future technology products will extend the same business.</p>
           </div>
 
           <div className="space-y-5">
@@ -169,7 +161,7 @@ export default function App() {
             <p className="mt-4 text-[12px] text-[#71717A]">Technology business · AI / automation · Micro-SaaS · Software products</p>
             <p className="mt-3 text-[10px] tracking-[0.12em] text-[#52525B]">© 2026 Almagremium. All rights reserved.</p>
           </div>
-          <div className="text-[10px] tracking-[0.16em] text-[#52525B]">MW · DYK · FUTURE PRODUCTS</div>
+          <div className="text-[10px] tracking-[0.16em] text-[#52525B]">MW · FUTURE PRODUCTS</div>
         </div>
       </footer>
     </div>
